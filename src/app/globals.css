@@ -1,0 +1,396 @@
+@import "tailwindcss";
+
+/* Сайт работает только в светлой теме: вариант `dark:` никогда не срабатывает. */
+@custom-variant dark (&:where(.never-dark, .never-dark *));
+
+@theme {
+  --font-sans:
+    var(--font-onest), "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-display:
+    var(--font-nunito), var(--font-onest), "Segoe UI", Arial, sans-serif;
+
+  --color-ink: #25364a;
+  --color-ink-soft: #55657a;
+  --color-milk: #fff9ef;
+  --color-paper: #ffffff;
+
+  --color-sun: #ffc94a;
+  --color-sun-deep: #e99a0c;
+  --color-sun-soft: #fff1c9;
+
+  --color-sky: #83d5f5;
+  --color-sky-deep: #1b7fae;
+  --color-sky-soft: #e3f5fd;
+
+  --color-coral: #ff8b78;
+  --color-coral-deep: #d9533e;
+  --color-coral-soft: #ffe5df;
+
+  --color-mint: #a7dfc2;
+  --color-mint-deep: #2f8a5f;
+  --color-mint-soft: #e5f6ed;
+
+  --color-lavender: #c8b6f4;
+  --color-lavender-deep: #6c4fc9;
+  --color-lavender-soft: #f1ecfd;
+
+  --color-peach: #ffd2b0;
+  --color-whatsapp: #25d366;
+  --color-whatsapp-deep: #128c4a;
+
+  --shadow-soft: 0 10px 30px -12px rgb(37 54 74 / 0.22);
+  --shadow-card: 0 18px 40px -22px rgb(37 54 74 / 0.35);
+  --shadow-pop: 0 6px 0 0 rgb(37 54 74 / 0.12);
+
+  --animate-drift: drift 26s ease-in-out infinite alternate;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-twinkle: twinkle 3.6s ease-in-out infinite;
+  --animate-sway: sway 6s ease-in-out infinite;
+  --animate-spin-slow: spin 60s linear infinite;
+}
+
+/* ---------- База: только светлая тема ---------- */
+:root {
+  color-scheme: light only;
+  --header-h: 64px;
+  --section-gap: clamp(3rem, 2.2rem + 3vw, 5.5rem);
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-h: 76px;
+  }
+}
+
+@layer base {
+  html,
+  body {
+    background-color: #fff9ef;
+    color: #25364a;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overflow-x: clip;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: clamp(0.95rem, 0.9rem + 0.22vw, 1.0625rem);
+    line-height: 1.6;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern";
+  }
+
+  /* Пока сохранённый язык (RU) не применён — не показываем казахский текст на долю секунды. */
+  html:has(#ng-lang-pending) body {
+    visibility: hidden;
+  }
+
+  ::selection {
+    background: #ffc94a;
+    color: #25364a;
+  }
+
+  /* Элементы форм и кнопки не наследуют системные тёмные цвета. */
+  button,
+  input,
+  select,
+  textarea {
+    color: inherit;
+    background-color: transparent;
+    font: inherit;
+  }
+
+  :focus-visible {
+    outline: 3px solid #1b7fae;
+    outline-offset: 3px;
+    border-radius: 10px;
+  }
+
+  /* Якоря: заголовок секции не прячется под фиксированной шапкой. */
+  section[id] {
+    scroll-margin-top: calc(var(--header-h) + 8px);
+  }
+  #home {
+    scroll-margin-top: var(--header-h);
+  }
+}
+
+@layer components {
+  /* ---------- Типографика ---------- */
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  .h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(1.75rem, 1.05rem + 3.3vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+  }
+
+  .h2 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(1.5rem, 1.08rem + 1.65vw, 2.75rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+  }
+
+  .h3 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.2rem, 1rem + 0.8vw, 1.6rem);
+    line-height: 1.2;
+  }
+
+  .lead {
+    font-size: clamp(1rem, 0.94rem + 0.3vw, 1.175rem);
+    line-height: 1.6;
+    color: #55657a;
+  }
+
+  .section {
+    position: relative;
+    overflow: clip;
+    padding-block: var(--section-gap);
+  }
+
+  .container-site {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-site {
+      padding-inline: 1.5rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .container-site {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Небольшая метка над заголовком секции (без uppercase — бережём казахские буквы). */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem 0.35rem 0.6rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    background: #ffffff;
+    color: #25364a;
+    box-shadow:
+      0 1px 0 rgb(37 54 74 / 0.06),
+      0 6px 16px -10px rgb(37 54 74 / 0.4);
+  }
+
+  /* ---------- Кнопки ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 3rem;
+    padding: 0.75rem 1.4rem;
+    border-radius: 999px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1rem;
+    line-height: 1.2;
+    text-align: center;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active {
+    transform: translateY(1px) scale(0.99);
+  }
+
+  .btn-whatsapp {
+    background: #1fb35a;
+    color: #ffffff;
+    box-shadow:
+      0 5px 0 0 #128c4a,
+      0 14px 28px -12px rgb(18 140 74 / 0.7);
+  }
+  .btn-whatsapp:hover {
+    background: #1ca452;
+    transform: translateY(-2px);
+  }
+
+  .btn-light {
+    background: #ffffff;
+    color: #25364a;
+    box-shadow:
+      inset 0 0 0 2px rgb(37 54 74 / 0.12),
+      0 8px 18px -12px rgb(37 54 74 / 0.4);
+  }
+  .btn-light:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 0 0 2px rgb(37 54 74 / 0.22),
+      0 12px 22px -12px rgb(37 54 74 / 0.45);
+  }
+
+  .btn-sun {
+    background: #ffc94a;
+    color: #25364a;
+    box-shadow:
+      0 5px 0 0 #e99a0c,
+      0 14px 28px -14px rgb(233 154 12 / 0.8);
+  }
+  .btn-sun:hover {
+    transform: translateY(-2px);
+  }
+
+  /* ---------- Формы для фото ---------- */
+  .shape-leaf {
+    border-radius: 2.25rem 5.5rem 2.25rem 5.5rem;
+  }
+  @media (max-width: 639px) {
+    .shape-leaf {
+      border-radius: 1.6rem 3.5rem 1.6rem 3.5rem;
+    }
+  }
+
+  /* Нарисованная «от руки» дуга под акцентом заголовка */
+  .scribble {
+    position: relative;
+    display: inline;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M2 9.5C40 3 90 2.5 198 8' fill='none' stroke='%23ffc94a' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 0 92%;
+    background-size: 100% 0.42em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding-bottom: 0.06em;
+  }
+}
+
+/* ---------- Появление при прокрутке ---------- */
+html:has(#ng-js) .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+html:has(#ng-js) .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Анимации ---------- */
+@keyframes drift {
+  from {
+    transform: translateX(-10px);
+  }
+  to {
+    transform: translateX(14px);
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.82) rotate(12deg);
+    opacity: 0.75;
+  }
+}
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2.2s ease-out infinite;
+}
+.animate-menu-in {
+  animation: menu-in 0.24s ease-out both;
+}
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  html:has(#ng-js) .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
